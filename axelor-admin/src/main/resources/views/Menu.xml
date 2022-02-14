@@ -30,7 +30,7 @@
     <view type="form" name="meta-permission-form"/>
   </action-view>
 
-  <menuitem name="admin-root" title="Application Config" order="-60" icon="fa-gear"
+  <menuitem name="admin-root" title="Application Config" order="0" icon="fa-gear"
     icon-background="#31b4a9"/>
 
   <menuitem name="admin-root-app-management" parent="admin-root" order="5"

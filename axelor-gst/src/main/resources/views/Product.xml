@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <form id="gst-product-form" model="com.axelor.apps.base.db.Product" title="Product"
+    name="product-form" extension="true">
+    <extend target="//panel[@name='costsPanel']">
+      <insert position="inside">
+        <field name="gstRate"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='productTypologyPanel']">
+      <insert position="inside">
+        <field name="hsbn"/>
+      </insert>
+    </extend>
+
+  </form>
+
+  <action-method name="action-product-method-show-product-sheet"
+    id="action-gst-product-method-show-product-sheet">
+    <call class="com.axelor.apps.gst.web.GstProductController" method="printProductSheet"/>
+  </action-method>
+
+</object-views>

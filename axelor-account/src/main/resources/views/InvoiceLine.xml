@@ -577,6 +577,10 @@
     <attribute name="value" for="$isFilterOnSupplier" expr="eval: true"/>
   </action-attrs>
 
+  <!-- <action-attrs name="action-attrs-update-hsbn-on-product-select"> <attribute name="value" for="hsbn"
+    expr="eval: product.hsbn" if="product != null"/> <attribute name="value" for="gstRate" expr="eval: product.gstRate"
+    if="product != null"/> </action-attrs> -->
+
   <search-filters name="invoice-line-filters"
     model="com.axelor.apps.account.db.InvoiceLine" title="Invoice line filters">
     <field name="invoice.invoiceDate" title="Invoice Date"/>

@@ -3,6 +3,18 @@
     <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202111220844</property>
     <list-property name="propertyBindings">
         <structure>
+            <property name="name">queryText</property>
+            <property name="id">3669</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">3669</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">3669</property>
+        </structure>
+        <structure>
             <property name="name">odaURL</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DBName"].value</expression>
@@ -21,18 +33,6 @@
             <property name="name">odaDriverClass</property>
             <property name="id">209</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">queryText</property>
-            <property name="id">3669</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">3669</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">3669</property>
         </structure>
     </list-property>
     <property name="units">cm</property>
@@ -215,7 +215,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5433/axelor-open-suite</property>
+            <property name="odaUser">axelor</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">YXhlbG9y</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -2265,7 +2267,8 @@ CREATE OR REPLACE FUNCTION invoice_line_proc(invoiceId bigint)
 RETURNS table(inv_id bigint, product_name varchar, description text,
     "productType" varchar, "taxValue" numeric, qty numeric, "unitName" varchar,
     "unitPrice" numeric, price numeric, "totalDiscountAmount" numeric,
-    ex_tax_total numeric, in_tax_total numeric, "currencyCode" varchar,
+    ex_tax_total numeric, in_tax_total numeric,"igst" numeric,"cgst" numeric,"sgst" numeric,
+     "currencyCode" varchar,
     sequence int, "typeSelect" int, in_ati boolean, "productCode" varchar,
     "CustomerProductCode" varchar, "CustomerProductName" varchar,
     "productCategory" bigint, "showTotal" boolean, "hideUnitAmounts" boolean,
@@ -2294,6 +2297,9 @@ InvoiceLine.price,
 	as "totalDiscountAmount",
 InvoiceLine.ex_tax_total,
 InvoiceLine.in_tax_total,
+InvoiceLine.igst as "igst",
+InvoiceLine.cgst as "cgst",
+InvoiceLine.sgst as "sgst",
 Currency.code as "currencyCode",
 InvoiceLine.sequence as "sequence",
 InvoiceLine.type_select as "typeSelect",
@@ -2337,6 +2343,9 @@ InvoiceLine.price,
 	as "totalDiscountAmount",
 InvoiceLine.ex_tax_total,
 InvoiceLine.in_tax_total,
+InvoiceLine.igst as "igst",
+InvoiceLine.cgst as "cgst",
+InvoiceLine.sgst as "sgst",
 Currency.code as "currencyCode",
 InvoiceLine.sequence as "sequence",
 InvoiceLine.type_select as "typeSelect",
@@ -2503,6 +2512,24 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <text-property name="displayName">PackHideUnitAmounts</text-property>
                     <text-property name="heading">PackHideUnitAmounts</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">igst</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">igst</text-property>
+                    <text-property name="heading">igst</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">cgst</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">cgst</text-property>
+                    <text-property name="heading">cgst</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">sgst</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">sgst</text-property>
+                    <text-property name="heading">sgst</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -2633,6 +2660,21 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                         <property name="position">23</property>
                         <property name="name">PackHideUnitAmounts</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">24</property>
+                        <property name="name">igst</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">cgst</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">26</property>
+                        <property name="name">sgst</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -2799,6 +2841,27 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">24</property>
+                    <property name="name">igst</property>
+                    <property name="nativeName">igst</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">25</property>
+                    <property name="name">cgst</property>
+                    <property name="nativeName">cgst</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">26</property>
+                    <property name="name">sgst</property>
+                    <property name="nativeName">sgst</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH INV AS (
     select * from invoice_line_proc(cast(? as bigint))
@@ -2827,7 +2890,10 @@ select
     INV."productCategory",
     INV."showTotal",
     INV."hideUnitAmounts",
-    INV."PackHideUnitAmounts"
+    INV."PackHideUnitAmounts",
+    INV."igst",
+    INV."cgst",
+    INV."sgst"
     from INV
     LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
     LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
@@ -2867,7 +2933,10 @@ select
     INV."productCategory",
     BOOL_AND(INV."showTotal") as "showTotal",
     BOOL_OR(INV."hideUnitAmounts") as "hideUnitAmounts",
-    BOOL_AND(INV."PackHideUnitAmounts") as "PackHideUnitAmounts"
+    BOOL_AND(INV."PackHideUnitAmounts") as "PackHideUnitAmounts",
+    INV."igst",
+    INV."cgst",
+    INV."sgst"
     from INV
     LEFT JOIN base_product_category as ProductCategory on (INV."productCategory" = ProductCategory.id)
     LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
@@ -2876,7 +2945,7 @@ select
     AND AppBase.regroup_products_level_select = 'category'
     AND ((AppBase.regroup_products_type_select LIKE '%products%' AND INV."productType" = 'storable')
         OR (AppBase.regroup_products_type_select LIKE '%services%' AND INV."productType" = 'service'))
-    group by INV."productCategory", ProductCategory.name, ProductCategory.code, INV."productType", INV."taxValue", INV."unitName", INV."currencyCode"
+    group by INV."productCategory", ProductCategory.name, ProductCategory.code, INV."productType", INV."taxValue", INV."unitName", INV."igst", INV."cgst", INV."sgst", INV."currencyCode"
 
 UNION ALL
 
@@ -2911,7 +2980,10 @@ select
     null as "productCategory",
     BOOL_AND(INV."showTotal") as "showTotal",
     BOOL_OR(INV."hideUnitAmounts") as "hideUnitAmounts",
-    BOOL_AND(INV."PackHideUnitAmounts") as "PackHideUnitAmounts"
+    BOOL_AND(INV."PackHideUnitAmounts") as "PackHideUnitAmounts",
+    INV."igst",
+    INV."cgst",
+    INV."sgst"
 from INV
 LEFT JOIN base_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM base_app_base))
 LEFT JOIN account_invoice Invoice ON (INV.inv_id = Invoice.id)
@@ -2920,7 +2992,7 @@ WHERE AppBase.is_regroup_products_on_printings IS TRUE AND Invoice.group_product
     AND ((AppBase.regroup_products_type_select LIKE '%products%' AND INV."productType" = 'storable')
         OR (AppBase.regroup_products_type_select LIKE '%services%' AND INV."productType" = 'service'))
 group by AppBase.regroup_products_label_products, AppBase.regroup_products_label_services,
-        INV."productType", INV."taxValue", INV."unitName", INV."currencyCode";
+        INV."productType", INV."taxValue", INV."unitName", INV."currencyCode", INV."igst", INV."cgst", INV."sgst";
 
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -4625,7 +4697,7 @@ row["message_key"]
                     <property name="rowSpan">1</property>
                     <table name="InvoiceLineTable1" id="5601">
                         <property name="marginLeft">0pt</property>
-                        <property name="width">19.235208333333336cm</property>
+                        <property name="width">19.314583333333335cm</property>
                         <property name="dataSet">InvoiceLineDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
@@ -4842,6 +4914,24 @@ row["message_key"]
                                 <property name="dataType">integer</property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">igst</property>
+                                <text-property name="displayName">igst</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["igst"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">sgst</property>
+                                <text-property name="displayName">sgst</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["sgst"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">cgst</property>
+                                <text-property name="displayName">cgst</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["cgst"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
                         </list-property>
                         <list-property name="sort">
                             <structure>
@@ -4872,19 +4962,19 @@ row["message_key"]
                                     <expression name="valueExpr" type="javascript">row._outer["displayProductCodeOnPrinting"] != 1</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">0.7in</property>
+                            <property name="width">0.6145833333333334in</property>
                         </column>
                         <column id="5417">
-                            <property name="width">2in</property>
+                            <property name="width">1.2708333333333333in</property>
                         </column>
                         <column id="5418">
-                            <property name="width">0.5in</property>
+                            <property name="width">0.5729166666666666in</property>
                         </column>
                         <column id="5419">
-                            <property name="width">0.7in</property>
+                            <property name="width">0.9791666666666666in</property>
                         </column>
                         <column id="5420">
-                            <property name="width">0.7in</property>
+                            <property name="width">0.5520833333333334in</property>
                         </column>
                         <column id="5421">
                             <list-property name="visibility">
@@ -4893,7 +4983,7 @@ row["message_key"]
                                     <expression name="valueExpr" type="javascript">row._outer["hideDiscount"] == 1 || row["invoice_total_discount"] == null || row["invoice_total_discount"] == 0</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">0.6in</property>
+                            <property name="width">0.7291666666666666in</property>
                         </column>
                         <column id="5422">
                             <list-property name="visibility">
@@ -4902,7 +4992,7 @@ row["message_key"]
                                     <expression name="valueExpr" type="javascript">row["in_ati"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">0.7in</property>
+                            <property name="width">0.5in</property>
                         </column>
                         <column id="5423">
                             <list-property name="visibility">
@@ -4911,7 +5001,7 @@ row["message_key"]
                                     <expression name="valueExpr" type="javascript">row["in_ati"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">0.3in</property>
+                            <property name="width">0.21875in</property>
                         </column>
                         <column id="5424">
                             <list-property name="visibility">
@@ -4920,7 +5010,7 @@ row["message_key"]
                                     <expression name="valueExpr" type="javascript">!row["in_ati"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">0.7in</property>
+                            <property name="width">0.71875in</property>
                         </column>
                         <column id="5425">
                             <list-property name="visibility">
@@ -4929,7 +5019,16 @@ row["message_key"]
                                     <expression name="valueExpr" type="javascript">!row["in_ati"]</expression>
                                 </structure>
                             </list-property>
-                            <property name="width">0.3in</property>
+                            <property name="width">0.3958333333333333in</property>
+                        </column>
+                        <column id="5738">
+                            <property name="width">0.28125in</property>
+                        </column>
+                        <column id="5747">
+                            <property name="width">0.3020833333333333in</property>
+                        </column>
+                        <column id="5753">
+                            <property name="width">0.34375in</property>
                         </column>
                         <header>
                             <row id="5602">
@@ -5281,6 +5380,47 @@ row["message_key"]
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
+                                <cell id="5735">
+                                    <property name="colSpan">1</property>
+                                    <property name="rowSpan">1</property>
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <label id="5742">
+                                        <text-property name="text">Igst</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="5744">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <label id="5748">
+                                        <text-property name="text">Sgst</text-property>
+                                    </label>
+                                </cell>
+                                <cell id="5750">
+                                    <property name="borderBottomStyle">solid</property>
+                                    <property name="borderBottomWidth">thin</property>
+                                    <property name="borderLeftStyle">solid</property>
+                                    <property name="borderLeftWidth">thin</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                    <label id="5754">
+                                        <text-property name="text">Cgst</text-property>
+                                    </label>
+                                </cell>
                             </row>
                         </header>
                         <detail>
@@ -5447,14 +5587,19 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                     <grid id="4623">
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">center</property>
+                                        <property name="width">2.6193750000000002cm</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
                                                 <expression name="valueExpr" type="javascript">row["typeselect"] != 0</expression>
                                             </structure>
                                         </list-property>
-                                        <column id="4624"/>
-                                        <column id="4625"/>
+                                        <column id="4624">
+                                            <property name="width">1.031875cm</property>
+                                        </column>
+                                        <column id="4625">
+                                            <property name="width">1.5875cm</property>
+                                        </column>
                                         <row id="4626">
                                             <cell id="4627">
                                                 <text id="5392">
@@ -5749,6 +5894,39 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                         <text-property name="content"><![CDATA[ <VALUE-OF>row["currencyCode"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
+                                <cell id="5736">
+                                    <property name="colSpan">1</property>
+                                    <property name="rowSpan">1</property>
+                                    <property name="borderBottomStyle">none</property>
+                                    <property name="borderLeftStyle">none</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">none</property>
+                                    <data id="5743">
+                                        <structure name="toc"/>
+                                        <property name="resultSetColumn">igst</property>
+                                    </data>
+                                </cell>
+                                <cell id="5745">
+                                    <property name="borderBottomStyle">none</property>
+                                    <property name="borderLeftStyle">none</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">none</property>
+                                    <data id="5749">
+                                        <property name="resultSetColumn">sgst</property>
+                                    </data>
+                                </cell>
+                                <cell id="5751">
+                                    <property name="borderBottomStyle">none</property>
+                                    <property name="borderLeftStyle">none</property>
+                                    <property name="borderRightStyle">solid</property>
+                                    <property name="borderRightWidth">thin</property>
+                                    <property name="borderTopStyle">none</property>
+                                    <data id="5755">
+                                        <property name="resultSetColumn">cgst</property>
+                                    </data>
+                                </cell>
                             </row>
                         </detail>
                         <footer>
@@ -5790,6 +5968,18 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                     <property name="borderTopWidth">thin</property>
                                 </cell>
                                 <cell id="5415">
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                </cell>
+                                <cell id="5737">
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                </cell>
+                                <cell id="5746">
+                                    <property name="borderTopStyle">solid</property>
+                                    <property name="borderTopWidth">thin</property>
+                                </cell>
+                                <cell id="5752">
                                     <property name="borderTopStyle">solid</property>
                                     <property name="borderTopWidth">thin</property>
                                 </cell>

@@ -175,6 +175,7 @@
           <field name="productFamily" canEdit="false" colSpan="12"
             form-view="product-family-form" grid-view="product-family-grid"/>
           <field name="productCategory" canEdit="false" colSpan="12"
+            onChange="action-product-update-gst-rate-on-change-product-category"
             form-view="product-category-form" grid-view="product-category-grid"/>
         </panel>
         <panel name="inAtiExpensePanel" colSpan="12">
@@ -523,6 +524,7 @@
 
     <panel-mail name="mailsPanel">
       <mail-messages/>
+      <mail-followers/>
     </panel-mail>
   </form>
 
@@ -970,5 +972,10 @@
   <action-method name="action-product-method-set-anomaly">
     <call class="com.axelor.apps.base.web.ProductController" method="setPriceListLineAnomaly"/>
   </action-method>
+
+  <action-attrs name="action-product-update-gst-rate-on-change-product-category"
+    model="com.axelor.apps.base.db.ProductCategory">
+    <attribute name="value" for="gstRate" expr="eval: productCategory?.gstRate"/>
+  </action-attrs>
 
 </object-views>
