@@ -68,4 +68,29 @@ public class GstInvoiceGeneartor extends InvoiceServiceManagementImpl {
 
     return computeInvoice;
   }
+
+  public boolean checkState(Invoice invoice) {
+
+    if (invoice.getAddress().getState() != null
+        && invoice.getCompany().getAddress().getState() != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public InvoiceLine calculateInvoiceLineGst(InvoiceLine invoiceLine, boolean isIgst) {
+    BigDecimal divisior = new BigDecimal("2");
+    BigDecimal taxAmount = BigDecimal.ZERO;
+    taxAmount = invoiceLine.getInTaxPrice().subtract(invoiceLine.getPrice());
+    if (isIgst) {
+      invoiceLine.setIgst(taxAmount);
+    } else {
+      BigDecimal sgstAndcgst = taxAmount.divide(divisior);
+      invoiceLine.setSgst(sgstAndcgst);
+      invoiceLine.setCgst(sgstAndcgst);
+    }
+
+    return invoiceLine;
+  }
 }

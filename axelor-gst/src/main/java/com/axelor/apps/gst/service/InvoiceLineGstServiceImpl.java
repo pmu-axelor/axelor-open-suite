@@ -60,6 +60,13 @@ public class InvoiceLineGstServiceImpl extends InvoiceLineProjectServiceImpl {
 
   @Override
   public Map<String, Object> resetProductInformation(Invoice invoice) throws AxelorException {
+    //
+    //	  Address companyAddress = invoice.getCompany().getAddress();
+    //	    List<PartnerAddress> partnerAddressList = invoice.getPartner().getPartnerAddressList();
+    //	    Address partnerAddress = null;
+    //	    for (PartnerAddress partnerAddresses : partnerAddressList) {
+    //	      partnerAddress = partnerAddresses.getAddress();
+    //	    }
 
     Map<String, Object> productInformation = super.resetProductInformation(invoice);
     productInformation.put("hsbn", null);
@@ -67,6 +74,7 @@ public class InvoiceLineGstServiceImpl extends InvoiceLineProjectServiceImpl {
     productInformation.put("igst", null);
     productInformation.put("sgst", null);
     productInformation.put("cgst", null);
+
     return productInformation;
   }
 }

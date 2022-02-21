@@ -5,19 +5,20 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.account.web.InvoiceLineController;
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.gst.exception.IExceptionMessage;
+import com.axelor.apps.gst.service.GstInvoiceGeneartor;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.util.List;
 
 public class GstInvoiceController extends InvoiceLineController {
+
+  @Inject GstInvoiceGeneartor gstInvoiceGeneartor;
 
   @Override
   public void compute(ActionRequest request, ActionResponse response) throws AxelorException {
@@ -74,30 +75,19 @@ public class GstInvoiceController extends InvoiceLineController {
     response.setValue("companyInTaxTotal", companyInTaxTotal);
     response.setValue("companyExTaxTotal", companyExTaxTotal);
 
-    Address companyAddress = invoice.getCompany().getAddress();
-    List<PartnerAddress> partnerAddressList = invoice.getPartner().getPartnerAddressList();
-    Address partnerAddress = null;
-    for (PartnerAddress partnerAddresses : partnerAddressList) {
-      partnerAddress = partnerAddresses.getAddress();
-    }
+    boolean igst;
+    if (gstInvoiceGeneartor.checkState(invoice)) {
+      igst =
+          !invoice.getCompany().getAddress().getState().equals(invoice.getAddress().getState())
+              ? true
+              : false;
 
-    BigDecimal divisior = new BigDecimal("2");
-    BigDecimal taxAmount = inTaxTotal.subtract(exTaxTotal);
-
-    if (partnerAddress.getState().getName() == null
-        || companyAddress.getState().getName() == null) {
-     response.setFlash(I18n.get(IExceptionMessage.GST_ADDRESS_STATE));
-   }
-    if (partnerAddress.getState().getName().equals(companyAddress.getState().getName())) {
-     BigDecimal sgstAndcgst = taxAmount.divide(divisior);
-      invoiceLine.setSgst(sgstAndcgst);
-      invoiceLine.setCgst(sgstAndcgst);
+      invoiceLine = gstInvoiceGeneartor.calculateInvoiceLineGst(invoiceLine, igst);
+      response.setValue("sgst", invoiceLine.getSgst());
+      response.setValue("cgst", invoiceLine.getCgst());
+      response.setValue("igst", invoiceLine.getIgst());
     } else {
-      invoiceLine.setIgst(taxAmount);
+      response.setError(I18n.get(IExceptionMessage.GST_ADDRESS_STATE));
     }
-
-    response.setValue("sgst", invoiceLine.getSgst());
-    response.setValue("cgst", invoiceLine.getCgst());
-    response.setValue("igst", invoiceLine.getIgst());
   }
 }

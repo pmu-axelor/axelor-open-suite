@@ -7,13 +7,6 @@
   <menuitem name="menu-gst-root" title="Gst" icon="fa-tasks" order="-60"
     if="__config__.app.isApp('gst')" icon-background="#3f6bb9"/>
 
-  <menuitem title="Test" name="menu-gst-test" parent="menu-gst-root" action="menu.get.test"/>
-  <action-view name="menu.get.test" title="Test">
-    <view type="form" name="custom-test-form"/>
-    <view type="grid" name="custom-test-grid"/>
-  </action-view>
-
-
   <menuitem title="Invoice" name="menu-gst-root-invoice" parent="menu-gst-root"
     action="menu.gst.root.invoice"/>
   <action-view name="menu.gst.root.invoice" title="Invoice"

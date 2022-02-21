@@ -18,4 +18,9 @@
     </extend>
   </form>
 
+  <action-method name="action-invoice-line-method-compute"
+    id="action-gst-invoice-line-method-compute">
+    <call class="com.axelor.apps.gst.web.GstInvoiceController" method="compute"/>
+  </action-method>
+
 </object-views>
